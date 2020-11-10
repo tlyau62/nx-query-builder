@@ -1,7 +1,7 @@
 {
   "name": "nx-query-builder",
   "version": "0.0.1",
-  "main": "./dist/nx-json-form.umd.min.js",
+  "main": "./dist/nx-query-builder.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
