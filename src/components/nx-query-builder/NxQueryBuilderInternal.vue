@@ -44,7 +44,7 @@ export default {
       this.setFilters(filters);
     },
     value(value) {
-      if (!isNil(value) && value.valid) {
+      if (!isNil(value)) {
         this.setRules(value);
       }
     },
