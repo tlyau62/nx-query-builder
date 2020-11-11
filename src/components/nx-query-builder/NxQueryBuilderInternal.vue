@@ -5,7 +5,7 @@
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
-import { cloneDeep } from "lodash";
+import { isNil, cloneDeep } from "lodash";
 
 export default {
   name: "NxQueryBuilderInternal",
@@ -40,7 +40,9 @@ export default {
       this.setFilters(filters);
     },
     value(value) {
-      this.setRules(value);
+      if (!isNil(value) && value.valid) {
+        this.setRules(value);
+      }
     },
   },
   beforeDestroy() {
@@ -52,11 +54,12 @@ export default {
   },
   methods: {
     emitRules() {
-      const rules = this.builder.queryBuilder("getRules");
-
-      if (rules) {
-        this.$emit("input", rules);
-      }
+      this.$emit(
+        "input",
+        this.builder.queryBuilder("getRules", {
+          allow_invalid: true,
+        })
+      );
     },
     setFilters(filters) {
       this.builder.queryBuilder("reset");
