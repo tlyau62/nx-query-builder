@@ -36,6 +36,8 @@ export default {
     builder.queryBuilder("validate");
 
     this.registerRulesChanged();
+
+    this.emitRules();
   },
   watch: {
     filters(filters) {
