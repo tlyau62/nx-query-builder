@@ -1,6 +1,6 @@
 <template>
   <div id="app" class="container">
-    <nx-query-builder :filters="filters" v-model="rules" />
+    <nx-query-builder :filters="filters" v-model="rules" :key="id" />
 
     <p>
       {{ rules }}
@@ -8,6 +8,7 @@
 
     <button @click="setFilterB">Set Filter B</button>
     <button @click="setRulesB">Set Rule B</button>
+    <button @click="incId">Inc id</button>
   </div>
 </template>
 
@@ -19,6 +20,7 @@ export default {
   components: { NxQueryBuilder },
   data() {
     return {
+      id: 0,
       query: {},
       filters: [
         {
@@ -112,6 +114,9 @@ export default {
     };
   },
   methods: {
+    incId() {
+      this.id++;
+    },
     setFilterB() {
       this.filters = [
         {

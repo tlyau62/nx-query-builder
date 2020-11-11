@@ -53,6 +53,7 @@ export default {
     const { builder } = this;
 
     if (builder) {
+      builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833
       builder.queryBuilder("destroy");
     }
   },
