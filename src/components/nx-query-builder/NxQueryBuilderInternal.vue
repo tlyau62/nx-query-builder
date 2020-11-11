@@ -5,7 +5,7 @@
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
-import { omit, cloneDeep } from "lodash";
+import { cloneDeep } from "lodash";
 
 export default {
   name: "NxQueryBuilderInternal",
@@ -55,7 +55,7 @@ export default {
       const rules = this.builder.queryBuilder("getRules");
 
       if (rules) {
-        this.$emit("input", omit(rules, ["valid"]));
+        this.$emit("input", rules);
       }
     },
     setFilters(filters) {
