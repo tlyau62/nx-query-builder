@@ -33,6 +33,8 @@ export default {
       rules: this.value,
     });
 
+    builder.queryBuilder("validate");
+
     this.registerRulesChanged();
   },
   watch: {

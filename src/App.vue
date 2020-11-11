@@ -100,6 +100,11 @@ export default {
                 operator: "equal",
                 value: 1,
               },
+              {
+                id: "id",
+                operator: "equal",
+                value: "asd",
+              },
             ],
           },
         ],
