@@ -116,7 +116,7 @@ export default {
     },
   },
   beforeDestroy() {
-    const { builder } = this;
+    const { builder, comps } = this;
 
     if (builder) {
       for (const comp of comps) {
