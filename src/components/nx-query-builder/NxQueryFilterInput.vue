@@ -4,7 +4,7 @@ import $ from "jquery";
 
 export default {
   name: "NxQueryFilterInput",
-  props: ["context"],
+  props: ["context", "rule"],
   components: {
     Fragment,
     Vnodes: {
@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       scope: {
-        value: null,
+        value: this.rule.value,
       },
     };
   },

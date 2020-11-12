@@ -27,6 +27,8 @@ export default {
   data() {
     return {
       init: false,
+      tempValue: null,
+      comps: [],
     };
   },
   computed: {
@@ -56,27 +58,36 @@ export default {
       return;
     }
 
-    let comp;
+    const comps = this.comps;
 
     const filters = this.config.filters.map((filter) => ({
       ...filter,
       input(rule, name) {
         const InputClass = Vue.extend(NxQueryFilterInput);
-
-        comp = new InputClass({
+        const existComp = $(rule.$el).data("vue");
+        const comp = new InputClass({
           propsData: {
             context: filter.context,
+            rule,
           },
         });
+
+        if (existComp) {
+          comps.splice(comps.indexOf(existComp), 1);
+          existComp.$destroy();
+        }
+
+        comps.push(comp);
+        $(rule.$el).data("vue", comp);
 
         return $(comp.$mount().$el);
       },
       valueGetter(rule) {
-        return comp.scope.value;
+        return $(rule.$el).data("vue").scope.value;
       },
       valueSetter(rule, value) {
         if (rule.operator.nb_inputs > 0) {
-          comp.scope.value = value;
+          $(rule.$el).data("vue").scope.value = value;
         }
       },
     }));
@@ -99,7 +110,7 @@ export default {
       this.$emit("refresh");
     },
     value(value) {
-      if (!isNil(value)) {
+      if (!isNil(value) && value !== this.tempValue) {
         this.setRules(value);
       }
     },
@@ -108,18 +119,22 @@ export default {
     const { builder } = this;
 
     if (builder) {
+      for (const comp of comps) {
+        comp.$destroy();
+      }
       builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833
       builder.queryBuilder("destroy");
     }
   },
   methods: {
     emitRules() {
-      this.$emit(
-        "input",
-        this.builder.queryBuilder("getRules", {
-          allow_invalid: true,
-        })
-      );
+      const rules = this.builder.queryBuilder("getRules", {
+        allow_invalid: true,
+      });
+
+      this.tempValue = rules;
+
+      this.$emit("input", rules);
     },
     setFilters(filters) {
       this.builder.queryBuilder("reset");
