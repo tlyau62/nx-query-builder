@@ -87,8 +87,6 @@ export default {
       rules: this.value,
     });
 
-    window.builder = this.builder;
-
     builder.queryBuilder("validate");
 
     this.registerRulesChanged();
