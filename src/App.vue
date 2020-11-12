@@ -1,6 +1,33 @@
 <template>
   <div id="app" class="container">
-    <nx-query-builder :filters="filters" v-model="rules" :key="id" />
+    <nx-query-builder v-model="rules" :key="id">
+      <!-- <nx-query-filter id="name" label="Name" type="string" />
+      <nx-query-filter
+        id="in_stock"
+        label="In stock"
+        type="integer"
+        input="radio"
+        :values="{ 1: 'Yes', 0: 'No' }"
+        :operators="['equal']"
+      /> -->
+      <nx-query-filter id="pw" label="password" type="string" #default="scope">
+        <Coordinate :scope="scope" />
+        <!-- <div>
+          {{ scope.value + ": 12345" }}
+          <input type="text" v-model="scope.value" />
+        </div> -->
+      </nx-query-filter>
+
+      <!-- id: "in_stock",
+          label: "In stock",
+          type: "integer",
+          input: "radio",
+          values: {
+            1: "Yes",
+            0: "No",
+          },
+          operators: ["equal"], -->
+    </nx-query-builder>
 
     <p>
       {{ rules }}
@@ -15,9 +42,15 @@
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import NxQueryBuilder from "@/components/nx-query-builder/NxQueryBuilder";
+import NxQueryFilter from "@/components/nx-query-builder/NxQueryFilter";
+import $ from "jquery";
+import Vue from "vue";
+import Coordinate from "@/components/Coordinate";
+
+window.$ = $;
 
 export default {
-  components: { NxQueryBuilder },
+  components: { NxQueryBuilder, NxQueryFilter, Coordinate },
   data() {
     return {
       id: 0,
@@ -85,29 +118,9 @@ export default {
         condition: "AND",
         rules: [
           {
-            id: "price",
-            operator: "less",
-            value: 10.25,
-          },
-          {
-            condition: "OR",
-            rules: [
-              {
-                id: "category",
-                operator: "equal",
-                value: 2,
-              },
-              {
-                id: "category",
-                operator: "equal",
-                value: 1,
-              },
-              {
-                id: "id",
-                operator: "equal",
-                value: "asd",
-              },
-            ],
+            id: "pw",
+            operator: "equal",
+            value: "test",
           },
         ],
       },

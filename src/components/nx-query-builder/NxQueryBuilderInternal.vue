@@ -1,11 +1,18 @@
 <template>
-  <div></div>
+  <div class="nx-query-builder-internal">
+    <div class="nx-query-builder-internal__querybuilder" />
+    <div style="display: none;">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
 import { isNil, cloneDeep } from "lodash";
+import NxQueryFilterInput from "./NxQueryFilterInput";
+import Vue from "vue";
 
 export default {
   name: "NxQueryBuilderInternal",
@@ -18,30 +25,81 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      init: false,
+    };
   },
   computed: {
     builder() {
       return $(this.$el);
     },
   },
+  beforeMount() {
+    this.componentStore = [];
+    this.config.filters = [];
+
+    this.$on("filter-created", (filter) => {
+      if (this.init) {
+        this.$emit("refresh");
+      } else {
+        this.config.filters.push(filter);
+      }
+    });
+  },
+  created() {
+    this.config = {};
+  },
   mounted() {
     const { builder } = this;
 
+    if (this.config.filters.length === 0) {
+      return;
+    }
+
+    let comp;
+
+    const filters = this.config.filters.map((filter) => ({
+      ...filter,
+      input(rule, name) {
+        window.rule = rule;
+        const InputClass = Vue.extend(NxQueryFilterInput);
+
+        comp = new InputClass({
+          propsData: {
+            context: filter.context,
+          },
+        });
+
+        return $(comp.$mount().$el);
+      },
+      valueGetter(rule) {
+        return comp.scope.value;
+      },
+      valueSetter(rule, value) {
+        if (rule.operator.nb_inputs > 0) {
+          comp.scope.value = value;
+        }
+      },
+    }));
+
     builder.queryBuilder({
-      filters: this.filters,
+      filters,
       rules: this.value,
     });
+
+    window.builder = this.builder;
 
     builder.queryBuilder("validate");
 
     this.registerRulesChanged();
 
     this.emitRules();
+
+    this.init = true;
   },
   watch: {
     filters(filters) {
-      this.setFilters(filters);
+      this.$emit("refresh");
     },
     value(value) {
       if (!isNil(value)) {
