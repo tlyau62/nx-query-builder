@@ -61,7 +61,6 @@ export default {
     const filters = this.config.filters.map((filter) => ({
       ...filter,
       input(rule, name) {
-        window.rule = rule;
         const InputClass = Vue.extend(NxQueryFilterInput);
 
         comp = new InputClass({
