@@ -1,11 +1,18 @@
 <template>
-  <div></div>
+  <div class="nx-query-builder-internal">
+    <div class="nx-query-builder-internal__querybuilder" />
+    <div style="display: none;">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
 import { isNil, cloneDeep } from "lodash";
+import NxQueryFilterInput from "./NxQueryFilterInput";
+import Vue from "vue";
 
 export default {
   name: "NxQueryBuilderInternal",
@@ -18,18 +25,78 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      init: false,
+      tempValue: null,
+      comps: {},
+    };
   },
   computed: {
     builder() {
       return $(this.$el);
     },
   },
+  beforeMount() {
+    this.componentStore = [];
+    this.config.filters = [];
+
+    this.$on("filter-created", (filter) => {
+      if (this.init) {
+        this.$emit("refresh");
+      } else {
+        this.config.filters.push(filter);
+      }
+    });
+  },
+  created() {
+    this.config = {};
+  },
   mounted() {
     const { builder } = this;
 
+    if (this.config.filters.length === 0) {
+      return;
+    }
+
+    const comps = this.comps;
+
+    const filters = this.config.filters.map((filter) => {
+      if (!filter.context.$scopedSlots.default) {
+        return filter;
+      }
+
+      return {
+        ...filter,
+        input(rule, name) {
+          const InputClass = Vue.extend(NxQueryFilterInput);
+          const comp = new InputClass({
+            propsData: {
+              context: filter.context,
+              rule,
+            },
+          });
+
+          if (comps[rule.id]) {
+            comps[rule.id].$destroy();
+          }
+
+          comps[rule.id] = comp;
+
+          return $(comp.$mount().$el);
+        },
+        valueGetter(rule) {
+          return comps[rule.id].scope.value;
+        },
+        valueSetter(rule, value) {
+          if (rule.operator.nb_inputs > 0) {
+            comps[rule.id].scope.value = value;
+          }
+        },
+      };
+    });
+
     builder.queryBuilder({
-      filters: this.filters,
+      filters,
       rules: this.value,
     });
 
@@ -38,33 +105,39 @@ export default {
     this.registerRulesChanged();
 
     this.emitRules();
+
+    this.init = true;
   },
   watch: {
     filters(filters) {
-      this.setFilters(filters);
+      this.$emit("refresh");
     },
     value(value) {
-      if (!isNil(value)) {
+      if (!isNil(value) && value !== this.tempValue) {
         this.setRules(value);
       }
     },
   },
   beforeDestroy() {
-    const { builder } = this;
+    const { builder, comps } = this;
 
     if (builder) {
+      for (const comp of Object.values(comps)) {
+        comp.$destroy();
+      }
       builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833
       builder.queryBuilder("destroy");
     }
   },
   methods: {
     emitRules() {
-      this.$emit(
-        "input",
-        this.builder.queryBuilder("getRules", {
-          allow_invalid: true,
-        })
-      );
+      const rules = this.builder.queryBuilder("getRules", {
+        allow_invalid: true,
+      });
+
+      this.tempValue = rules;
+
+      this.$emit("input", rules);
     },
     setFilters(filters) {
       this.builder.queryBuilder("reset");

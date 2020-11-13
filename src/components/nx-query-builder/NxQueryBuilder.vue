@@ -1,10 +1,14 @@
 <template>
-  <NxQueryBuilderInternal
-    :key="id"
-    @refresh="id++"
-    v-bind="$attrs"
-    v-on="$listeners"
-  />
+  <div>
+    <NxQueryBuilderInternal
+      :key="id"
+      @refresh="id++"
+      v-bind="$attrs"
+      v-on="$listeners"
+    >
+      <slot></slot>
+    </NxQueryBuilderInternal>
+  </div>
 </template>
 
 <script>

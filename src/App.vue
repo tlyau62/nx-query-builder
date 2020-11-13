@@ -1,6 +1,31 @@
 <template>
   <div id="app" class="container">
-    <nx-query-builder :filters="filters" v-model="rules" :key="id" />
+    <nx-query-builder v-model="rules" :key="id">
+      <nx-query-filter id="name" label="Name" type="string" />
+      <nx-query-filter id="pw" label="password" type="string" #default="scope">
+        <input type="text" v-model="scope.value" />
+        <button @click="appendA(scope)">Append A</button>
+      </nx-query-filter>
+      <nx-query-filter
+        id="age"
+        label="Age"
+        type="string"
+        value="ABC"
+        #default="scope"
+      >
+        <button @click="appendB(scope)">Append B</button>
+      </nx-query-filter>
+      <nx-query-filter
+        id="number"
+        label="Number"
+        type="integer"
+        default-value="123"
+        #default="scope"
+      >
+        <p>My number</p>
+        <input type="number" v-model="scope.value" />
+      </nx-query-filter>
+    </nx-query-builder>
 
     <p>
       {{ rules }}
@@ -8,16 +33,21 @@
 
     <button @click="setFilterB">Set Filter B</button>
     <button @click="setRulesB">Set Rule B</button>
-    <button @click="incId">Inc id</button>
+    <button @click="id++">Inc id</button>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import NxQueryBuilder from "@/components/nx-query-builder/NxQueryBuilder";
+import NxQueryFilter from "@/components/nx-query-builder/NxQueryFilter";
+import $ from "jquery";
+import Vue from "vue";
+
+window.$ = $;
 
 export default {
-  components: { NxQueryBuilder },
+  components: { NxQueryBuilder, NxQueryFilter },
   data() {
     return {
       id: 0,
@@ -85,35 +115,23 @@ export default {
         condition: "AND",
         rules: [
           {
-            id: "price",
-            operator: "less",
-            value: 10.25,
-          },
-          {
-            condition: "OR",
-            rules: [
-              {
-                id: "category",
-                operator: "equal",
-                value: 2,
-              },
-              {
-                id: "category",
-                operator: "equal",
-                value: 1,
-              },
-              {
-                id: "id",
-                operator: "equal",
-                value: "asd",
-              },
-            ],
+            id: "pw",
+            operator: "equal",
+            value: "test",
           },
         ],
       },
     };
   },
   methods: {
+    appendA(scope) {
+      scope.value += "A";
+      scope.update();
+    },
+    appendB(scope) {
+      scope.value += "B";
+      scope.update();
+    },
     incId() {
       this.id++;
     },
