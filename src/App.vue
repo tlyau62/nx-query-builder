@@ -12,11 +12,10 @@
         :operators="['equal']"
       /> -->
       <nx-query-filter id="pw" label="password" type="string" #default="scope">
-        <Coordinate :scope="scope" />
-        <!-- <div>
-          {{ scope.value + ": 12345" }}
+        <div>
           <input type="text" v-model="scope.value" />
-        </div> -->
+          <button @click="appendA(scope)">Append A</button>
+        </div>
       </nx-query-filter>
 
       <!-- id: "in_stock",
@@ -46,12 +45,11 @@ import NxQueryBuilder from "@/components/nx-query-builder/NxQueryBuilder";
 import NxQueryFilter from "@/components/nx-query-builder/NxQueryFilter";
 import $ from "jquery";
 import Vue from "vue";
-import Coordinate from "@/components/Coordinate";
 
 window.$ = $;
 
 export default {
-  components: { NxQueryBuilder, NxQueryFilter, Coordinate },
+  components: { NxQueryBuilder, NxQueryFilter },
   data() {
     return {
       id: 0,
@@ -128,6 +126,10 @@ export default {
     };
   },
   methods: {
+    appendA(scope) {
+      scope.value += "A";
+      scope.update();
+    },
     incId() {
       this.id++;
     },

@@ -22,6 +22,7 @@ export default {
     return {
       scope: {
         value: this.rule.value,
+        update: this.update,
       },
     };
   },
@@ -38,6 +39,11 @@ export default {
     } else {
       throw new Error("Not support slot");
     }
+  },
+  methods: {
+    update() {
+      $(this.$el).trigger("change");
+    },
   },
 };
 </script>
