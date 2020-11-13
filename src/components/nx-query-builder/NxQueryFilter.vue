@@ -15,6 +15,7 @@ export default {
     "values",
     "operators",
     "default-value",
+    "validation",
   ],
   beforeMount() {
     this.$parent.$emit("filter-created", {
@@ -25,6 +26,7 @@ export default {
       values: this.values,
       operators: this.operators,
       default_value: this.defaultValue,
+      validation: this.validation,
       context: this,
     });
   },
