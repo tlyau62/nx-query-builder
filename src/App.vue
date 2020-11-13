@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="container">
     <nx-query-builder v-model="rules" :key="id">
+      <nx-query-filter id="name" label="Name" type="string" />
       <!-- <nx-query-filter id="name" label="Name" type="string" />
       <nx-query-filter
         id="in_stock"

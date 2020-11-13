@@ -60,37 +60,43 @@ export default {
 
     const comps = this.comps;
 
-    const filters = this.config.filters.map((filter) => ({
-      ...filter,
-      input(rule, name) {
-        const InputClass = Vue.extend(NxQueryFilterInput);
-        const existComp = $(rule.$el).data("vue");
-        const comp = new InputClass({
-          propsData: {
-            context: filter.context,
-            rule,
-          },
-        });
+    const filters = this.config.filters.map((filter) => {
+      if (!filter.context.$scopedSlots.default) {
+        return filter;
+      }
 
-        if (existComp) {
-          comps.splice(comps.indexOf(existComp), 1);
-          existComp.$destroy();
-        }
+      return {
+        ...filter,
+        input(rule, name) {
+          const InputClass = Vue.extend(NxQueryFilterInput);
+          const existComp = $(rule.$el).data("vue");
+          const comp = new InputClass({
+            propsData: {
+              context: filter.context,
+              rule,
+            },
+          });
 
-        comps.push(comp);
-        $(rule.$el).data("vue", comp);
+          if (existComp) {
+            comps.splice(comps.indexOf(existComp), 1);
+            existComp.$destroy();
+          }
 
-        return $(comp.$mount().$el);
-      },
-      valueGetter(rule) {
-        return $(rule.$el).data("vue").scope.value;
-      },
-      valueSetter(rule, value) {
-        if (rule.operator.nb_inputs > 0) {
-          $(rule.$el).data("vue").scope.value = value;
-        }
-      },
-    }));
+          comps.push(comp);
+          $(rule.$el).data("vue", comp);
+
+          return $(comp.$mount().$el);
+        },
+        valueGetter(rule) {
+          return $(rule.$el).data("vue").scope.value;
+        },
+        valueSetter(rule, value) {
+          if (rule.operator.nb_inputs > 0) {
+            $(rule.$el).data("vue").scope.value = value;
+          }
+        },
+      };
+    });
 
     builder.queryBuilder({
       filters,
