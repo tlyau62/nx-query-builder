@@ -28,7 +28,7 @@ export default {
     return {
       init: false,
       tempValue: null,
-      comps: [],
+      comps: {},
     };
   },
   computed: {
@@ -69,7 +69,6 @@ export default {
         ...filter,
         input(rule, name) {
           const InputClass = Vue.extend(NxQueryFilterInput);
-          const existComp = $(rule.$el).data("vue");
           const comp = new InputClass({
             propsData: {
               context: filter.context,
@@ -77,22 +76,20 @@ export default {
             },
           });
 
-          if (existComp) {
-            comps.splice(comps.indexOf(existComp), 1);
-            existComp.$destroy();
+          if (comps[rule.id]) {
+            comps[rule.id].$destroy();
           }
 
-          comps.push(comp);
-          $(rule.$el).data("vue", comp);
+          comps[rule.id] = comp;
 
           return $(comp.$mount().$el);
         },
         valueGetter(rule) {
-          return $(rule.$el).data("vue").scope.value;
+          return comps[rule.id].scope.value;
         },
         valueSetter(rule, value) {
           if (rule.operator.nb_inputs > 0) {
-            $(rule.$el).data("vue").scope.value = value;
+            comps[rule.id].scope.value = value;
           }
         },
       };
@@ -125,7 +122,7 @@ export default {
     const { builder, comps } = this;
 
     if (builder) {
-      for (const comp of comps) {
+      for (const comp of Object.values(comps)) {
         comp.$destroy();
       }
       builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833

@@ -56,7 +56,7 @@
 
     <button @click="setFilterB">Set Filter B</button>
     <button @click="setRulesB">Set Rule B</button>
-    <button @click="incId">Inc id</button>
+    <button @click="id++">Inc id</button>
   </div>
 </template>
 
