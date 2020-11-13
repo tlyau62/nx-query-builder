@@ -1,20 +1,14 @@
 <script>
-import { Fragment } from "vue-fragment";
 import $ from "jquery";
 
 export default {
   name: "NxQueryFilterInput",
   props: ["context", "rule"],
   components: {
-    Fragment,
     Vnodes: {
       functional: true,
       render(h, ctx) {
-        const vnodes = ctx.props.vnodes;
-
-        return vnodes;
-
-        // return vnodes.length > 1 ? <fragment>{vnodes}</fragment> : vnodes;
+        return <span>{ctx.props.vnodes}</span>;
       },
     },
   },

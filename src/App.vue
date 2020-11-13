@@ -2,20 +2,9 @@
   <div id="app" class="container">
     <nx-query-builder v-model="rules" :key="id">
       <nx-query-filter id="name" label="Name" type="string" />
-      <!-- <nx-query-filter id="name" label="Name" type="string" />
-      <nx-query-filter
-        id="in_stock"
-        label="In stock"
-        type="integer"
-        input="radio"
-        :values="{ 1: 'Yes', 0: 'No' }"
-        :operators="['equal']"
-      /> -->
       <nx-query-filter id="pw" label="password" type="string" #default="scope">
-        <div>
-          <input type="text" v-model="scope.value" />
-          <button @click="appendA(scope)">Append A</button>
-        </div>
+        <input type="text" v-model="scope.value" />
+        <button @click="appendA(scope)">Append A</button>
       </nx-query-filter>
       <nx-query-filter
         id="age"
@@ -33,21 +22,9 @@
         default-value="123"
         #default="scope"
       >
-        <div>
-          <p>My number</p>
-          <input type="number" v-model="scope.value" />
-        </div>
+        <p>My number</p>
+        <input type="number" v-model="scope.value" />
       </nx-query-filter>
-
-      <!-- id: "in_stock",
-          label: "In stock",
-          type: "integer",
-          input: "radio",
-          values: {
-            1: "Yes",
-            0: "No",
-          },
-          operators: ["equal"], -->
     </nx-query-builder>
 
     <p>
