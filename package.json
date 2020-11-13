@@ -1,6 +1,6 @@
 {
   "name": "nx-query-builder",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "./dist/nx-query-builder.umd.min.js",
   "scripts": {
     "serve": "vue-cli-service serve",
