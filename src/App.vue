@@ -17,6 +17,27 @@
           <button @click="appendA(scope)">Append A</button>
         </div>
       </nx-query-filter>
+      <nx-query-filter
+        id="age"
+        label="Age"
+        type="string"
+        value="ABC"
+        #default="scope"
+      >
+        <button @click="appendB(scope)">Append B</button>
+      </nx-query-filter>
+      <nx-query-filter
+        id="number"
+        label="Number"
+        type="integer"
+        default-value="123"
+        #default="scope"
+      >
+        <div>
+          <p>My number</p>
+          <input type="number" v-model="scope.value" />
+        </div>
+      </nx-query-filter>
 
       <!-- id: "in_stock",
           label: "In stock",
@@ -128,6 +149,10 @@ export default {
   methods: {
     appendA(scope) {
       scope.value += "A";
+      scope.update();
+    },
+    appendB(scope) {
+      scope.value += "B";
       scope.update();
     },
     incId() {

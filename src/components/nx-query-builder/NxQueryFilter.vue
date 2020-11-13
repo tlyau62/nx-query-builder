@@ -7,7 +7,15 @@
 <script>
 export default {
   name: "NxQueryFilter",
-  props: ["id", "label", "type", "input", "values", "operators"],
+  props: [
+    "id",
+    "label",
+    "type",
+    "input",
+    "values",
+    "operators",
+    "default-value",
+  ],
   beforeMount() {
     this.$parent.$emit("filter-created", {
       id: this.id,
@@ -16,6 +24,7 @@ export default {
       input: this.input,
       values: this.values,
       operators: this.operators,
+      default_value: this.defaultValue,
       context: this,
     });
   },
