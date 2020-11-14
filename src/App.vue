@@ -25,6 +25,21 @@
       >
         <input type="number" v-model="scope.value" />
       </nx-query-filter>
+      <nx-query-filter
+        id="datetime"
+        label="Date time"
+        type="date"
+        :operators="['in', 'between']"
+        #default="scope"
+      >
+        <b-form-datepicker
+          v-model="scope.value"
+          @input="scope.update()"
+          menu-class="w-100"
+          calendar-width="100%"
+          style="min-width: 300px"
+        ></b-form-datepicker>
+      </nx-query-filter>
     </nx-query-builder>
 
     <p>
