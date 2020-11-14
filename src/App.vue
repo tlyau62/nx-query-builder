@@ -30,8 +30,10 @@
         label="Date time"
         type="date"
         :operators="['in', 'between']"
+        default-value="2020-11-01"
         #default="scope"
       >
+        {{ scope.value }}
         <b-form-datepicker
           v-model="scope.value"
           @input="scope.update()"
