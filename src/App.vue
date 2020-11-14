@@ -40,6 +40,23 @@
           style="min-width: 300px"
         ></b-form-datepicker>
       </nx-query-filter>
+      <nx-query-filter
+        id="silder"
+        label="Silder"
+        type="integer"
+        #default="scope"
+      >
+        <span class="d-flex">
+          <b-form-input
+            type="range"
+            v-model="scope.value"
+            @input="scope.update()"
+          />
+          <span class="ml-2">
+            {{ scope.value }}
+          </span>
+        </span>
+      </nx-query-filter>
     </nx-query-builder>
 
     <p>
