@@ -20,9 +20,9 @@
         label="Number"
         type="integer"
         default-value="123"
+        :operators="['in', 'between']"
         #default="scope"
       >
-        <p>My number</p>
         <input type="number" v-model="scope.value" />
       </nx-query-filter>
     </nx-query-builder>
