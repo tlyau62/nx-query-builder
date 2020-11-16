@@ -20,10 +20,44 @@
         label="Number"
         type="integer"
         default-value="123"
+        :operators="['in', 'between']"
         #default="scope"
       >
-        <p>My number</p>
         <input type="number" v-model="scope.value" />
+      </nx-query-filter>
+      <nx-query-filter
+        id="datetime"
+        label="Date time"
+        type="date"
+        :operators="['in', 'between']"
+        default-value="2020-11-01"
+        #default="scope"
+      >
+        {{ scope.value }}
+        <b-form-datepicker
+          v-model="scope.value"
+          @input="scope.update()"
+          menu-class="w-100"
+          calendar-width="100%"
+          style="min-width: 300px"
+        ></b-form-datepicker>
+      </nx-query-filter>
+      <nx-query-filter
+        id="silder"
+        label="Silder"
+        type="integer"
+        #default="scope"
+      >
+        <span class="d-flex">
+          <b-form-input
+            type="range"
+            v-model="scope.value"
+            @input="scope.update()"
+          />
+          <span class="ml-2">
+            {{ scope.value }}
+          </span>
+        </span>
       </nx-query-filter>
     </nx-query-builder>
 
@@ -43,8 +77,16 @@ import NxQueryBuilder from "@/components/nx-query-builder/NxQueryBuilder";
 import NxQueryFilter from "@/components/nx-query-builder/NxQueryFilter";
 import $ from "jquery";
 import Vue from "vue";
+import { BootstrapVue, IconsPlugin } from "bootstrap-vue";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 window.$ = $;
+
+// Install BootstrapVue
+Vue.use(BootstrapVue);
+// Optionally install the BootstrapVue icon components plugin
+Vue.use(IconsPlugin);
 
 export default {
   components: { NxQueryBuilder, NxQueryFilter },

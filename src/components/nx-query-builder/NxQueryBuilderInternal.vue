@@ -1,7 +1,7 @@
 <template>
   <div class="nx-query-builder-internal">
     <div class="nx-query-builder-internal__querybuilder" />
-    <div style="display: none;">
+    <div style="display: none">
       <slot></slot>
     </div>
   </div>
@@ -68,28 +68,46 @@ export default {
       return {
         ...filter,
         input(rule, name) {
+          if (name.endsWith(rule.id)) {
+            name += "_value_0";
+          }
+
+          const valNum = parseInt(name.split("value_")[1]);
+
+          if (!comps[rule.id]) {
+            comps[rule.id] = [];
+          }
+
+          const comp = comps[rule.id][valNum];
+
+          if (comp) {
+            comp.$destroy();
+          }
+
           const InputClass = Vue.extend(NxQueryFilterInput);
-          const comp = new InputClass({
+          comps[rule.id][valNum] = new InputClass({
             propsData: {
               context: filter.context,
               rule,
             },
           });
 
-          if (comps[rule.id]) {
-            comps[rule.id].$destroy();
-          }
-
-          comps[rule.id] = comp;
-
-          return $(comp.$mount().$el);
+          return $(comps[rule.id][valNum].$mount().$el);
         },
         valueGetter(rule) {
-          return comps[rule.id].scope.value;
+          if (rule.operator.nb_inputs === 1) {
+            return comps[rule.id][0].scope.value;
+          }
+
+          return comps[rule.id].map((comp) => comp.scope.value);
         },
         valueSetter(rule, value) {
-          if (rule.operator.nb_inputs > 0) {
-            comps[rule.id].scope.value = value;
+          if (rule.operator.nb_inputs === 1) {
+            comps[rule.id][0].scope.value = value;
+          }
+
+          for (const comp of comps[rule.id]) {
+            comp.scope.value = value;
           }
         },
       };
@@ -122,7 +140,7 @@ export default {
     const { builder, comps } = this;
 
     if (builder) {
-      for (const comp of Object.values(comps)) {
+      for (const comp of Object.values(comps).flat()) {
         comp.$destroy();
       }
       builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833
