@@ -18,17 +18,25 @@ export default {
     "validation",
   ],
   beforeMount() {
-    this.$parent.$emit("filter-created", {
-      id: this.id,
-      label: this.label,
-      type: this.type,
-      input: this.input,
-      values: this.values,
-      operators: this.operators,
-      default_value: this.defaultValue,
-      validation: this.validation,
-      context: this,
-    });
+    this.$parent.$emit("filter-created", this.getFilterEvt());
+  },
+  destroyed() {
+    this.$parent.$emit("filter-destroyed", this.getFilterEvt());
+  },
+  methods: {
+    getFilterEvt() {
+      return {
+        id: this.id,
+        label: this.label,
+        type: this.type,
+        input: this.input,
+        values: this.values,
+        operators: this.operators,
+        default_value: this.defaultValue,
+        validation: this.validation,
+        context: this,
+      };
+    },
   },
 };
 </script>

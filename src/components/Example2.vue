@@ -60,7 +60,9 @@ export default {
         condition: "AND",
         rules: [
           {
-            empty: true,
+            id: "root.name",
+            operator: "equal",
+            value: "name",
           },
         ],
       },

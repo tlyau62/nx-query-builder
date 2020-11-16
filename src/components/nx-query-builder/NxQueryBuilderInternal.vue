@@ -10,16 +10,13 @@
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
-import { isNil, cloneDeep } from "lodash";
+import { isNil, cloneDeep, clone } from "lodash";
 import NxQueryFilterInput from "./NxQueryFilterInput";
 import Vue from "vue";
 
 export default {
   name: "NxQueryBuilderInternal",
   props: {
-    filters: {
-      type: Array,
-    },
     value: {
       type: Object,
     },
@@ -41,10 +38,22 @@ export default {
     this.config.filters = [];
 
     this.$on("filter-created", (filter) => {
+      this.config.filters.push(filter);
+
       if (this.init) {
-        this.$emit("refresh");
-      } else {
-        this.config.filters.push(filter);
+        this.setFilters(this.config.filters);
+      }
+    });
+
+    this.$on("filter-destroyed", (filter) => {
+      const filterIdx = this.config.filters.findIndex(
+        (f) => f.context === filter.context
+      );
+
+      this.config.filters.splice(filterIdx, 1);
+
+      if (this.init) {
+        this.setFilters(this.config.filters);
       }
     });
   },
@@ -114,7 +123,7 @@ export default {
     });
 
     builder.queryBuilder({
-      filters,
+      filters: clone(filters),
       rules: this.value,
     });
 
@@ -127,9 +136,6 @@ export default {
     this.init = true;
   },
   watch: {
-    filters(filters) {
-      this.$emit("refresh");
-    },
     value(value) {
       if (!isNil(value) && value !== this.tempValue) {
         this.setRules(value);
@@ -157,11 +163,6 @@ export default {
 
       this.$emit("input", rules);
     },
-    setFilters(filters) {
-      this.builder.queryBuilder("reset");
-      this.builder.queryBuilder("setFilters", filters);
-    },
-
     /**
      * https://github.com/mistic100/jQuery-QueryBuilder/issues/833
      */
@@ -169,6 +170,26 @@ export default {
       this.registerRulesChanged(() => {
         this.builder.queryBuilder("setRules", cloneDeep(rules));
       });
+    },
+
+    setFilters(filters) {
+      this.builder.queryBuilder("reset");
+      this.builder.queryBuilder("setFilters", filters);
+
+      try {
+        this.setRules(this.value);
+      } catch (ex) {
+        console.warn("Invalid rules found after setting rules.");
+
+        this.setRules({
+          condition: "AND",
+          rules: [
+            {
+              empty: true,
+            },
+          ],
+        });
+      }
     },
 
     registerRulesChanged(fn = () => {}) {
