@@ -10,7 +10,7 @@
 <script>
 import $ from "jquery";
 import "jQuery-QueryBuilder/dist/js/query-builder.js";
-import { isNil, cloneDeep, clone } from "lodash";
+import { isNil, cloneDeep, clone, isArray } from "lodash";
 import NxQueryFilterInput from "./NxQueryFilterInput";
 import Vue from "vue";
 
@@ -104,19 +104,21 @@ export default {
           return $(comps[rule.id][valNum].$mount().$el);
         },
         valueGetter(rule) {
+          const values = comps[rule.id].map((comp) => comp.scope.value);
+
           if (rule.operator.nb_inputs === 1) {
-            return comps[rule.id][0].scope.value;
+            return values.slice(0, rule.operator.nb_inputs).join(",");
           }
 
-          return comps[rule.id].map((comp) => comp.scope.value);
+          return values;
         },
         valueSetter(rule, value) {
           if (rule.operator.nb_inputs === 1) {
-            comps[rule.id][0].scope.value = value;
-          }
-
-          for (const comp of comps[rule.id]) {
-            comp.scope.value = value;
+            comps[rule.id][0].scope.value = value.join(",");
+          } else {
+            for (let i = 0; i < rule.operator.nb_inputs; i++) {
+              comps[rule.id][i].scope.value = value[i];
+            }
           }
         },
       };
