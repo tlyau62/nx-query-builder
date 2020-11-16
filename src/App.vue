@@ -2,6 +2,7 @@
   <div id="app" class="container">
     <example1></example1>
     <example2></example2>
+    <example3></example3>
   </div>
 </template>
 
@@ -14,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import Example1 from "@/components/Example1";
 import Example2 from "@/components/Example2";
+import Example3 from "@/components/Example3";
 
 window.$ = $;
 
@@ -23,7 +25,7 @@ Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 
 export default {
-  components: { Example1, Example2 },
+  components: { Example1, Example2, Example3 },
   data() {
     return {};
   },

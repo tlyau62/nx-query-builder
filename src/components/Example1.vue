@@ -147,9 +147,7 @@ export default {
         condition: "AND",
         rules: [
           {
-            id: "pw",
-            operator: "equal",
-            value: "test",
+            empty: true,
           },
         ],
       },

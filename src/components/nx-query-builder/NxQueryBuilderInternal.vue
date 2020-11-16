@@ -114,7 +114,9 @@ export default {
         },
         valueSetter(rule, value) {
           if (rule.operator.nb_inputs === 1) {
-            comps[rule.id][0].scope.value = value.join(",");
+            comps[rule.id][0].scope.value = isArray(value)
+              ? value.join(",")
+              : value;
           } else {
             for (let i = 0; i < rule.operator.nb_inputs; i++) {
               comps[rule.id][i].scope.value = value[i];
