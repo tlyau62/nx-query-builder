@@ -16,6 +16,7 @@ export default {
     "operators",
     "default-value",
     "validation",
+    "field",
   ],
   beforeMount() {
     this.$parent.$emit("filter-created", this.getFilterEvt());
@@ -34,6 +35,7 @@ export default {
         operators: this.operators,
         default_value: this.defaultValue,
         validation: this.validation,
+        field: this.field,
         context: this,
       };
     },
