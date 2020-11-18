@@ -160,9 +160,10 @@ export default {
   },
   methods: {
     emitRules() {
-      const rules = this.builder.queryBuilder("getRules", {
-        allow_invalid: false,
-      });
+      const rules =
+        this.builder.queryBuilder("getRules", {
+          allow_invalid: false,
+        }) || {};
 
       this.tempValue = rules;
 
