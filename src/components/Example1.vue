@@ -38,7 +38,6 @@
         {{ scope.value }}
         <b-form-datepicker
           v-model="scope.value"
-          @input="scope.update()"
           menu-class="w-100"
           calendar-width="100%"
           style="min-width: 300px"
@@ -51,11 +50,7 @@
         #default="scope"
       >
         <span class="d-flex">
-          <b-form-input
-            type="range"
-            v-model="scope.value"
-            @input="scope.update()"
-          />
+          <b-form-input type="range" v-model="scope.value" />
           <span class="ml-2">
             {{ scope.value }}
           </span>
@@ -156,11 +151,9 @@ export default {
   methods: {
     appendA(scope) {
       scope.value += "A";
-      scope.update();
     },
     appendB(scope) {
       scope.value += "B";
-      scope.update();
     },
     incId() {
       this.id++;

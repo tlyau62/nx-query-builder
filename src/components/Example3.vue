@@ -21,7 +21,7 @@
         #default="scope"
       >
         test input:
-        <input type="text" v-model="scope.value" @input="scope.update()" />
+        <input type="text" v-model="scope.value" />
       </nx-query-filter>
       <nx-query-filter
         id="datetime"
@@ -31,9 +31,9 @@
         :operators="['between', 'equal']"
         #default="scope"
       >
+        {{ scope.value }}
         <b-form-datepicker
           v-model="scope.value"
-          @input="scope.update()"
           menu-class="w-100"
           calendar-width="100%"
           style="min-width: 300px"

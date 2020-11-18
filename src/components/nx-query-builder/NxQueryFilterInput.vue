@@ -34,6 +34,11 @@ export default {
       throw new Error("Not support slot");
     }
   },
+  watch: {
+    "scope.value"(value) {
+      this.update();
+    },
+  },
   methods: {
     update() {
       $(this.$el).trigger("change");
