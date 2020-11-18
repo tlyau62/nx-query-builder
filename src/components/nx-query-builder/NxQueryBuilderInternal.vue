@@ -155,6 +155,7 @@ export default {
       }
       builder.off("rulesChanged.queryBuilder"); // similar issue to https://github.com/mistic100/jQuery-QueryBuilder/issues/833
       builder.queryBuilder("destroy");
+      this.init = false;
     }
   },
   methods: {
